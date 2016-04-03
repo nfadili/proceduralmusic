@@ -8,7 +8,8 @@ def newNote(pitch, duration, velocity=20):
 def parsePitch(pitch):
     if pitch == 'R': return -1
     note, octave = pitch.split('_')
-    if len(note) is 2:note, acc = note
+    if int(octave) > 8 or int(octave) < 0: raise NoteError('Octave out of range: [0, 8].')
+    if len(note) is 2: note, acc = note
     else: acc = 0
     case= {
          0 : 0,
@@ -24,11 +25,10 @@ def parsePitch(pitch):
     return ((int(octave) * 12) + case.get(note) + case.get(acc))
 
 ################################################################################
-# Tests
-print parsePitch('C#_5')  #assert = 61
-print parsePitch('C_5') #assert = 60
-print parsePitch('D_3') #assert = 38
-print parsePitch('D#_3') #assert = 39
-print parsePitch('E_3') #assert = 40
-print parsePitch('E#_3') #assert = 41
-print parsePitch('R')     #assert = 0 or -1
+class NoteError(Exception):
+    # Base class for Note errors.
+    pass
+
+class PitchError(NoteError):
+    def __init__(self, msg):
+        self.msg = msg
