@@ -3,7 +3,7 @@ import midi
 
 # Add self to param list if you end up making a class/API
 # Parse to -> data[NOTE, VELOCITY]
-def newNote(pitch, duration, vel=20):
+def newNote(pitch, duration, vel):
     noteVal = parsePitch(pitch)
     ticks = parseDuration(duration)
     on = midi.NoteOnEvent(tick=ticks[0], velocity=vel, pitch=noteVal)
@@ -31,7 +31,7 @@ def parsePitch(pitch):
     }
     return ((int(octave) * 12) + case.get(note) + case.get(acc))
 
-# Takes in a standard note duration:
+# Takes in a standard note duration with resolution 16:
 #   whole = 1
 #   half = 2
 #   quarter = 4
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     note = newNote('C_5', 16, 20)
     track.append(note[0])   # midi.on event
-    track.append(note[1])   #midi.off event
+    track.append(note[1])   # midi.off event
 
     eot = midi.EndOfTrackEvent(tick=1)
     track.append(eot)
