@@ -2,12 +2,19 @@ import midi
 
 
 # Add self to param list if you end up making a class/API
-# Parse to -> data[NOTE, VELOCITY]
+# Returns tuple of (onEvent, offEvent)
 def newNote(pitch, duration, vel):
     noteVal = parsePitch(pitch)
     ticks = parseDuration(duration)
     on = midi.NoteOnEvent(tick=ticks[0], velocity=vel, pitch=noteVal)
     off = midi.NoteOffEvent(tick=ticks[1], pitch=noteVal)
+    return (on, off)
+
+def newRest(duration):
+    ticks = parseDuration(duration)
+    print(ticks)
+    on = midi.NoteOnEvent(tick=ticks[1])
+    off = midi.NoteOffEvent(tick=ticks[1])
     return (on, off)
 
 # Format must follow -> LETTER(ACCIDENTAL)_OCTAVE
