@@ -1,5 +1,5 @@
 import midi
-
+from constants import *
 
 # Add self to param list if you end up making a class/API
 # Returns tuple of (onEvent, offEvent)
@@ -12,7 +12,6 @@ def newNote(pitch, duration, vel):
 
 def newRest(duration):
     ticks = parseDuration(duration)
-    print(ticks)
     on = midi.NoteOnEvent(tick=ticks[1])
     off = midi.NoteOffEvent(tick=ticks[1])
     return (on, off)
@@ -22,7 +21,7 @@ def newRest(duration):
 def parsePitch(pitch):
     if pitch == 'R': return -1
     note, octave = pitch.split('_')
-    if int(octave) > 8 or int(octave) < 0: raise PitchError('Octave out of range: [0, 8].')
+    if int(octave) > MAX_OCTAVE or int(octave) < MIN_OCTAVE: raise PitchError('Octave out of range: [0, 8].')
     if len(note) is 2: note, acc = note
     else: acc = 0
     case= {
@@ -36,7 +35,7 @@ def parsePitch(pitch):
         'A': 9,
         'B': 11
     }
-    return ((int(octave) * 12) + case.get(note) + case.get(acc))
+    return ((int(octave) * NOTES_IN_OCTAVE) + case.get(note) + case.get(acc))
 
 # Takes in a standard note duration with resolution 16:
 #   whole = 1
@@ -49,13 +48,13 @@ def parsePitch(pitch):
 # Returns tuple (startTick, endTick) for parsing in the newNote function
 def parseDuration(duration):
     case= {
-        1 : 64,
-        2 : 32,
-        4 : 16,
-        8 : 8,
-        16: 4,
-        32: 2,
-        64: 1
+        WHOLE : MIDI_WHOLE,
+        HALF : MIDI_HALF,
+        QUARTER : MIDI_QUARTER,
+        EIGHTH : MIDI_EIGHTH,
+        SIXTEENTH: MIDI_SIXTEENTH,
+        THIRTY_SECOND: MIDI_THIRTY_SECOND,
+        SIXTY_FOURTH: MIDI_SIXTY_FOURTH
     }
     startTick = 0
     endTick = case.get(duration)
