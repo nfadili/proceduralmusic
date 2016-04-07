@@ -24,7 +24,7 @@ def parsePitch(pitch):
     if int(octave) > MAX_OCTAVE or int(octave) < MIN_OCTAVE: raise PitchError('Octave out of range: [0, 8].')
     if len(note) is 2: note, acc = note
     else: acc = 0
-    case= {
+    case = {
          0 : 0,
         '#': 1,
         'C': 0,

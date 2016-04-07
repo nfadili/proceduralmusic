@@ -29,49 +29,49 @@ NOTES_IN_OCTAVE = 12
 
 # Algorithm Rules
 
-    # Instrument Ranges #
-    BASS = 1
-    TENOR = 2
-    ALTO = 3
-    SOPRANO = 4
+# Instrument Ranges #
+BASS = 1
+TENOR = 2
+ALTO = 3
+SOPRANO = 4
 
-    # Steps #
-    HALF = 1
-    WHOLE = 2
-    WHOLE_HALF = 3
+# Steps #
+HALF = 1
+WHOLE = 2
+WHOLE_HALF = 3
 
-    # Scales #
-    MAJOR_SCALE = [WHOLE, WHOLE, HALF, WHOLE, WHOLE, WHOLE, HALF]
-    MINOR_SCALE_NATURAL = [WHOLE, HALF, WHOLE, WHOLE, HALF, WHOLE, WHOLE]
-    MINOR_SCALE_HARMONIC = [WHOLE, HALF, WHOLE, WHOLE, HALF, WHOLE_HALF, HALF]
+# Scales #
+MAJOR_SCALE = [WHOLE, WHOLE, HALF, WHOLE, WHOLE, WHOLE, HALF]
+MINOR_SCALE_NATURAL = [WHOLE, HALF, WHOLE, WHOLE, HALF, WHOLE, WHOLE]
+MINOR_SCALE_HARMONIC = [WHOLE, HALF, WHOLE, WHOLE, HALF, WHOLE_HALF, HALF]
 
-    # Intervals #
+# Intervals #
 
-        # Octave 1
-        P1 = 0
-        m2 = HALF
-        M2 = WHOLE
-        m3 = M2 + HALF
-        M3 = m3 + HALF
-        P4 = M3 + HALF
-        TT = P4 + HALF
-        P5 = TT + HALF
-        m6 = P5 + HALF
-        M6 = m6 + HALF
-        m7 = M6 + HALF
-        M7 = m7 + HALF
+# Octave 1
+P1 = 0
+m2 = HALF
+M2 = WHOLE
+m3 = M2 + HALF
+M3 = m3 + HALF
+P4 = M3 + HALF
+TT = P4 + HALF
+P5 = TT + HALF
+m6 = P5 + HALF
+M6 = m6 + HALF
+m7 = M6 + HALF
+M7 = m7 + HALF
 
-        # Octave 2
-        P8 = 12
-        m9 = P8 + HALF
-        M9 = m9 + HALF
-        m10 = M9 + HALF
-        M10 = m10 + HALF
-        P11 = M10 + HALF
-        CT = P11 + HALF     # Compund Tritone
-        P12 = CT + HALF
-        m13 = P12 + HALF
-        M13 = m13 + HALF
-        m14 = M12 + HALF
-        M14 = m13 + HALF
-        P15 = 24
+# Octave 2
+P8 = 12
+m9 = P8 + HALF
+M9 = m9 + HALF
+m10 = M9 + HALF
+M10 = m10 + HALF
+P11 = M10 + HALF
+CT = P11 + HALF     # Compund Tritone
+P12 = CT + HALF
+m13 = P12 + HALF
+M13 = m13 + HALF
+m14 = M13 + HALF
+M14 = m14 + HALF
+P15 = 24
