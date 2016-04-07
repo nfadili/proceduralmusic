@@ -29,11 +29,11 @@ NOTES_IN_OCTAVE = 12
 
 # Algorithm Rules
 
-# Instrument Ranges #
-BASS = 1
-TENOR = 2
-ALTO = 3
-SOPRANO = 4
+# Voice Ranges (Octave lies midway through the voice range) #
+BASS = 2
+TENOR = 3
+ALTO = 4
+SOPRANO = 5
 
 # Steps #
 HALF = 1

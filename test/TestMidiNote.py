@@ -1,6 +1,6 @@
 import unittest
 
-class TestNoteMethods(unittest.TestCase):
+class TestMidiNoteMethods(unittest.TestCase):
 
     def test_parsePitch_valid_NoAccidentals(self):
         self.assertEqual(parsePitch('C_0'), 0)

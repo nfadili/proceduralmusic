@@ -1,5 +1,5 @@
 import midi
-from Note import *
+from MidiNote import *
 from constants import *
 
 class Song:

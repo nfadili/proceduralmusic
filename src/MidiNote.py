@@ -78,10 +78,10 @@ if __name__ == '__main__':
 ################################################################################
 # Exception definitions
 ################################################################################
-class NoteError(Exception):
-    # Base class for Note errors.
+class MidiNoteError(Exception):
+    # Base class for MidiNote errors.
     pass
 
-class PitchError(NoteError):
+class PitchError(MidiNoteError):
     def __init__(self, msg):
         self.msg = msg
