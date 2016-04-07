@@ -3,7 +3,6 @@ from Note import *
 from constants import *
 
 class Song:
-
     # Reference to tracks are immedietly added to the midi.Pattern object.
     def __init__(self, numTracks, tempo=120):
         self.globalTickCount = 0
@@ -90,3 +89,14 @@ if __name__ == '__main__':
     song.markSongEnd()
     print(song.pattern)
     midi.write_midifile("example.mid", song.pattern)
+
+################################################################################
+# Exception definitions
+################################################################################
+class SongError(Exception):
+    # Base class for Song errors.
+    pass
+
+class TempoError(SongError):
+    def __init__(self, msg):
+        self.msg = msg
