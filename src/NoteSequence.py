@@ -124,14 +124,15 @@ class NoteSequence:
     def getNextNote(self):
         # 5% chance to go up an octave, %5 chance to go down an octave
         chooser = random.random()
-        if chooser < 0.05:
+        if chooser < 0.15:
             octave = self.voice - 1
-        elif chooser < 0.1:
+        elif chooser < 0.3:
             octave = self.voice + 1
         else:
             octave = self.voice
 
         # Probabilities for each interval
+        # Doesnt stay in key, bases the scale off of the current note not the tonic
         chooser = random.random()
         if chooser < 0.125: note = (self.noteHistory[-1].noteValue + self.key[0]) % 12
         elif chooser < 0.25: note = (self.noteHistory[-1].noteValue + self.key[1]) % 12
@@ -144,21 +145,18 @@ class NoteSequence:
 
         # Probablities for each duration
         chooser = random.random()
-        if chooser < 0.25: duration = HALF
-        elif chooser < 0.5: duration = QUARTER
-        elif chooser < 0.75: duration = EIGHTH
+        if chooser < 0.15: duration = HALF
+        elif chooser < 0.3: duration = QUARTER
+        elif chooser < 0.5: duration = EIGHTH
         else: duration = SIXTEENTH
 
         # Generate new note
         return Note(note, octave, duration)
 
-    def writeSequenceToTrack(self):
-        song = Song(1, 120)
+    def writeSequenceToTrack(self, song, trackNum):
         for note in self.sequence:
-            song.addNoteToTrack(0, note.letter, note.octave, note.duration)
-        song.markSongEnd()
-        midi.write_midifile("example.mid", song.pattern)
+            song.addNoteToTrack(trackNum, note.letter, note.octave, note.duration)
 
 if __name__ == '__main__':
-    seq = NoteSequence('C Major', SOPRANO, 50)
+    seq = NoteSequence('A Major', SOPRANO, 100)
     seq.writeSequenceToTrack()

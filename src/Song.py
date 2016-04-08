@@ -7,6 +7,7 @@ class Song:
     def __init__(self, numTracks, tempo=120):
         self.globalTickCount = 0
         self.startTempo = tempo
+        self.trackCount = numTracks
         self.pattern = midi.Pattern(resolution=MIDI_RESOLUTION)
         self.pattern.append([])                 # Add initial track for tempo changes
         self.addTempoEvent(tempo)               # Add initial tempo
