@@ -1,5 +1,6 @@
-import Song
+from Song import *
 from constants import *
+import random
 
 ################################################################################
 # Exception definitions
@@ -20,9 +21,44 @@ class Note:
          self.octave = octave
          self.duration = duration
          self.velocity = velocity
+         self.noteValue = self.getNoteValue(letter)
 
     def __str__(self):
-        return '(' + self.letter + str(self.octave) + ', ' + str(self.duration) + ', ' + str(self.velocity) + ')'
+        return '(' + self.letter + ', ' + str(self.octave) + ', ' + str(self.duration)\
+               + ', ' + str(self.velocity) + ')'
+
+    def getNoteValue(self, note):
+        case = {
+            'C' : 0,
+            'C#' : 1,
+            'D' : 2,
+            'D#' : 3,
+            'E' : 4,
+            'F' : 5,
+            'F#' : 6,
+            'G' : 7,
+            'G#' : 8,
+            'A' : 9,
+            'A#' : 10,
+            'B' : 11
+        }
+        return case.get(note)
+    def getNoteLetter(self, value):
+        case = {
+            0 : 'C',
+            1 : 'C#',
+            2 : 'D',
+            3 : 'D#',
+            4 : 'E',
+            5 : 'F',
+            6 : 'F#',
+            7 : 'G',
+            8 : 'G#',
+            9 : 'A',
+            10 : 'A#',
+            11 : 'B'
+        }
+        return case.get(note)
 
 ################################################################################
 # NoteSequence class
@@ -48,18 +84,21 @@ class NoteSequence:
             4 : 'ALTO',
             5 : 'SOPRANO'
         }
-        string = 'Key: ' + self.root + ' '+ self.keyDescription + '\n' + case.get(self.voice) + '\n['
+        string = 'Key: ' + self.root + ' ' + self.keyDescription + ' '\
+                 + str(self.key) + '\n' + case.get(self.voice) + '\n['
         for note in self.sequence:
             string += str(note)
         return string + ']'
 
     def generate(self):
-        seq = [Note(self.root, self.voice, EIGHTH, 20)] #Note(root, octave, duration, velocity)
+        random.seed()           # For note probabilities
+        seq = [Note(self.root, self.voice, EIGHTH, 20)] #Note(note, octave, duration, velocity)
+        self.noteHistory.append(Note(self.root, self.voice, EIGHTH, 20))
         while len(seq) < self.length:
             seq.append(Note(self.root, self.voice, EIGHTH, 20))
-            # newNote = self.getNextNote()
-            # seq.append(newNote)
-            # self.noteHistory.append(newNote.letter)
+            newNote = self.getNextNote()
+            seq.append(newNote)
+            self.noteHistory.append(newNote)
         return seq
 
     def parseKey(self, key):
@@ -68,7 +107,7 @@ class NoteSequence:
         self.keyDescription = tokens[1]
         key = self.defineKey(tokens[1:])
         if key is not InvalidKeyError: return key
-    else: return None       # Throw error here or maybe later
+        else: return None       # Throw error here or maybe later
 
 
     def defineKey(self, token):
@@ -80,14 +119,61 @@ class NoteSequence:
         return case.get(str(token[0]).lower(), InvalidKeyError('Invalid key.'))
 
     def getNextNote(self):
-        return None
+        # 5% chance to go up an octave, %5 chance to go down an octave
+        chooser = random.random()
+        if chooser < 0.05:
+            octave = self.voice - 1
+        elif chooser < 0.1:
+            octave = self.voice + 1
+        else:
+            octave = self.voice
+
+        # Probabilities for each interval
+        print(str(self.noteHistory[-1]))
+        chooser = random.random()
+        if chooser < 0.125: note = (self.noteHistory[-1].noteValue + self.key[0]) % 12
+        elif chooser < 0.25: note = (self.noteHistory[-1].noteValue + self.key[1]) % 12
+        elif chooser < 0.375: note = (self.noteHistory[-1].noteValue + self.key[2]) % 12
+        elif chooser < 0.5: note = (self.noteHistory[-1].noteValue + self.key[3]) % 12
+        elif chooser < 0.625: note = (self.noteHistory[-1].noteValue + self.key[4]) % 12
+        elif chooser < 0.75: note = (self.noteHistory[-1].noteValue + self.key[5]) % 12
+        elif chooser < 0.875: note = (self.noteHistory[-1].noteValue + self.key[6]) % 12
+        else: note = (self.noteHistory[-1].noteValue + self.key[7]) % 12
+
+        # Probablities for each duration
+        chooser = random.random()
+        if chooser < 0.25: duration = HALF
+        elif chooser < 0.5: duration = QUARTER
+        elif chooser < 0.75: duration = EIGHTH
+        else: duration = SIXTEENTH
+
+        # Generate new note
+        return Note(getNoteLetter(note), octave, duration)
 
     def writeSequenceToTrack(self):
-        # Loop through and add to a Song object with addNoteToTrack
-        # For now default octave to 5, duration to eighth
-        pass
+        song = Song(1, 120)
+        for note in self.sequence:
+            song.addNoteToTrack(0, note.letter, note.octave, note.duration)
+        song.markSongEnd()
+        midi.write_midifile("example.mid", song.pattern)
 
+def getNoteLetter(value):
+    case = {
+        0 : 'C',
+        1 : 'C#',
+        2 : 'D',
+        3 : 'D#',
+        4 : 'E',
+        5 : 'F',
+        6 : 'F#',
+        7 : 'G',
+        8 : 'G#',
+        9 : 'A',
+        10 : 'A#',
+        11 : 'B'
+    }
+    return case.get(value)
 
 if __name__ == '__main__':
-    seq = NoteSequence('C# Major', SOPRANO, 20)
-    print(seq)
+    seq = NoteSequence('C# Major', SOPRANO, 50)
+    seq.writeSequenceToTrack()
