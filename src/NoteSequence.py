@@ -1,6 +1,7 @@
 from Song import *
 from constants import *
 import random
+from pprint import pprint
 
 ################################################################################
 # Exception definitions
@@ -17,11 +18,13 @@ class InvalidKeyError(NoteSequenceError):
 ################################################################################
 class Note:
     def __init__(self, letter, octave, duration, velocity=20):
-         self.letter = letter
-         self.octave = octave
-         self.duration = duration
-         self.velocity = velocity
-         self.noteValue = self.getNoteValue(letter)
+        if type(letter) is str: self.letter = letter
+        elif type(letter) is int: self.letter = self.getNoteLetter(letter)
+        self.octave = octave
+        self.duration = duration
+        self.velocity = velocity
+        self.noteValue = self.getNoteValue(self.letter)
+        #print(self.noteValue)
 
     def __str__(self):
         return '(' + self.letter + ', ' + str(self.octave) + ', ' + str(self.duration)\
@@ -58,7 +61,7 @@ class Note:
             10 : 'A#',
             11 : 'B'
         }
-        return case.get(note)
+        return case.get(value)
 
 ################################################################################
 # NoteSequence class
@@ -129,7 +132,6 @@ class NoteSequence:
             octave = self.voice
 
         # Probabilities for each interval
-        print(str(self.noteHistory[-1]))
         chooser = random.random()
         if chooser < 0.125: note = (self.noteHistory[-1].noteValue + self.key[0]) % 12
         elif chooser < 0.25: note = (self.noteHistory[-1].noteValue + self.key[1]) % 12
@@ -148,7 +150,7 @@ class NoteSequence:
         else: duration = SIXTEENTH
 
         # Generate new note
-        return Note(getNoteLetter(note), octave, duration)
+        return Note(note, octave, duration)
 
     def writeSequenceToTrack(self):
         song = Song(1, 120)
@@ -157,23 +159,6 @@ class NoteSequence:
         song.markSongEnd()
         midi.write_midifile("example.mid", song.pattern)
 
-def getNoteLetter(value):
-    case = {
-        0 : 'C',
-        1 : 'C#',
-        2 : 'D',
-        3 : 'D#',
-        4 : 'E',
-        5 : 'F',
-        6 : 'F#',
-        7 : 'G',
-        8 : 'G#',
-        9 : 'A',
-        10 : 'A#',
-        11 : 'B'
-    }
-    return case.get(value)
-
 if __name__ == '__main__':
-    seq = NoteSequence('C# Major', SOPRANO, 50)
+    seq = NoteSequence('C Major', SOPRANO, 50)
     seq.writeSequenceToTrack()
