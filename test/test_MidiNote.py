@@ -1,6 +1,9 @@
 import unittest
+from src.MidiNote import *
 
-class TestMidiNoteMethods(unittest.TestCase):
+# Use command 'python -m test.test_MidiNote' to return
+
+class TestMidiNoteFunctions(unittest.TestCase):
 
     def test_parsePitch_valid_NoAccidentals(self):
         self.assertEqual(parsePitch('C_0'), 0)
@@ -15,7 +18,7 @@ class TestMidiNoteMethods(unittest.TestCase):
 
     def test_parsePitch_valid_WithAccidentals(self):
         self.assertEqual(parsePitch('C#_5'), 61)
-        self.assertEqual(parsePitch('D#_3'), 38)
+        self.assertEqual(parsePitch('D#_3'), 39)
         self.assertEqual(parsePitch('E#_3'), 41)
         self.assertEqual(parsePitch('B#_0'), 12)
 
