@@ -10,7 +10,7 @@ class NoteSequenceError(Exception):
     pass
 
 class InvalidKeyError(NoteSequenceError):
-    def __init__(self, msg):
+    def __init__(self, msg='Invalid key.'):
         self.msg = msg
 
 ################################################################################
@@ -24,7 +24,6 @@ class Note:
         self.duration = duration
         self.velocity = velocity
         self.noteValue = self.getNoteValue(self.letter)
-        #print(self.noteValue)
 
     def __str__(self):
         return '(' + self.letter + ', ' + str(self.octave) + ', ' + str(self.duration)\
@@ -76,7 +75,8 @@ class NoteSequence:
         self.voice = voice          # Determines starting octave
         self.root = ''              # Set in the parseKey function
         self.keyDescription = ''
-        self.key = self.parseKey(key)
+        try: self.parseKey(key)
+        except InvalidKeyError: raise InvalidKeyError
         self.noteHistory = []       # Start with only previous note, then look back farther. (Higher order markov chain).
         self.sequence = self.generate()
 
@@ -93,6 +93,9 @@ class NoteSequence:
             string += str(note)
         return string + ']'
 
+    # Markov Chain algorithm for generating a sequence of notes. Note choice is
+    # decided in getNextNote(), this function merely organizes and houses then
+    # overall logic.
     def generate(self):
         random.seed()           # For note probabilities
         seq = [Note(self.root, self.voice, EIGHTH, 20)] #Note(note, octave, duration, velocity)
@@ -104,13 +107,14 @@ class NoteSequence:
             self.noteHistory.append(newNote)
         return seq
 
+    # Converts user specified key: 'C# Natural Minor' -> array of notes in key.
     def parseKey(self, key):
         tokens = key.split(' ', 1)
         self.root = tokens[0]
         self.keyDescription = tokens[1]
         key = self.defineKey(tokens[1:])
-        if key is not InvalidKeyError: return key
-        else: return None       # Throw error here or maybe later
+        if key is InvalidKeyError: raise InvalidKeyError
+        else: self.key = key
 
 
     def defineKey(self, token):
@@ -119,7 +123,7 @@ class NoteSequence:
             'natural minor' : MINOR_SCALE_NATURAL,
             'harmonic minor' : MINOR_SCALE_HARMONIC
         }
-        return case.get(str(token[0]).lower(), InvalidKeyError('Invalid key.'))
+        return case.get(str(token[0]).lower(), InvalidKeyError)
 
     def getNextNote(self):
         # 5% chance to go up an octave, %5 chance to go down an octave

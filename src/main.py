@@ -13,7 +13,6 @@ if __name__ == '__main__':
     song = Song(choices[0],         #Track Count
                 choices[1])         #Tempo
     key = choices[2]                #Key
-
     for i in range(song.trackCount):
         seq = NoteSequence(key, BASS, 100)
         seq.writeSequenceToTrack(song, i)
