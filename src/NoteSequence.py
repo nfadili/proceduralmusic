@@ -101,22 +101,27 @@ class NoteSequence:
         seq = [Note(self.root, self.voice, EIGHTH, 20)] #Note(note, octave, duration, velocity)
         self.noteHistory.append(Note(self.root, self.voice, EIGHTH, 20))
         while len(seq) < self.length:
-            seq.append(Note(self.root, self.voice, EIGHTH, 20))
             newNote = self.getNextNote()
             seq.append(newNote)
             self.noteHistory.append(newNote)
         return seq
 
-    # Converts user specified key: 'C# Natural Minor' -> array of notes in key.
+    # Sets NoteSequence.key = the array.
+    #   Throws: InvalidKeyError if user defined key is not supported.
     def parseKey(self, key):
         tokens = key.split(' ', 1)
         self.root = tokens[0]
         self.keyDescription = tokens[1]
         key = self.defineKey(tokens[1:])
         if key is InvalidKeyError: raise InvalidKeyError
-        else: self.key = key
+        else:
+            i = 0
+            for i in range(len(key)):
+                key[i] = (self.getNoteValue(self.root) + key[i]) % 12
+            self.key = key
 
-
+    # Converts user specified key: 'C# Natural Minor' -> array of notes in key.
+    #   Throws: InvalidKeyError if user defined key is not supported.
     def defineKey(self, token):
         case = {
             'major' : MAJOR_SCALE,
@@ -125,8 +130,32 @@ class NoteSequence:
         }
         return case.get(str(token[0]).lower(), InvalidKeyError)
 
+    def noteProbabilities(self, noteValue):
+        # Root
+        if noteValue == self.key[0]:
+            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
+        # 2nd
+        if noteValue == self.key[1]:
+            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
+        # 3rd
+        if noteValue == self.key[2]:
+            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
+        # 4th
+        if noteValue == self.key[3]:
+            chains = [0.2, 0.4, 0.55, 0.6, 0.8, 0.95, 1]
+        # 5th
+        if noteValue == self.key[4]:
+            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
+        # 6th
+        if noteValue == self.key[5]:
+            chains = [0.05, 0.2, 0.4, 0.65, 0.7, 0.8, 1]
+        # 7th
+        if noteValue == self.key[6]:
+            chains = [0.4, 0.45, 0.55, 0.75, 0.85, 0.95, 1]
+        return chains
+
     def getNextNote(self):
-        # 5% chance to go up an octave, %5 chance to go down an octave
+        # 15% chance to go up an octave, 15% chance to go down an octave
         chooser = random.random()
         if chooser < 0.15:
             octave = self.voice - 1
@@ -138,14 +167,14 @@ class NoteSequence:
         # Probabilities for each interval
         # Doesnt stay in key, bases the scale off of the current note not the tonic
         chooser = random.random()
-        if chooser < 0.125: note = (self.noteHistory[-1].noteValue + self.key[0]) % 12
-        elif chooser < 0.25: note = (self.noteHistory[-1].noteValue + self.key[1]) % 12
-        elif chooser < 0.375: note = (self.noteHistory[-1].noteValue + self.key[2]) % 12
-        elif chooser < 0.5: note = (self.noteHistory[-1].noteValue + self.key[3]) % 12
-        elif chooser < 0.625: note = (self.noteHistory[-1].noteValue + self.key[4]) % 12
-        elif chooser < 0.75: note = (self.noteHistory[-1].noteValue + self.key[5]) % 12
-        elif chooser < 0.875: note = (self.noteHistory[-1].noteValue + self.key[6]) % 12
-        else: note = (self.noteHistory[-1].noteValue + self.key[7]) % 12
+        probs = self.noteProbabilities(self.noteHistory[-1].noteValue)
+        if chooser < probs[0]: note = self.key[0]
+        elif chooser < probs[1]: note = self.key[1]
+        elif chooser < probs[2]: note = self.key[2]
+        elif chooser < probs[3]: note = self.key[3]
+        elif chooser < probs[4]: note = self.key[4]
+        elif chooser < probs[5]: note = self.key[5]
+        elif chooser < probs[6]: note = self.key[6]
 
         # Probablities for each duration
         chooser = random.random()
@@ -160,6 +189,23 @@ class NoteSequence:
     def writeSequenceToTrack(self, song, trackNum):
         for note in self.sequence:
             song.addNoteToTrack(trackNum, note.letter, note.octave, note.duration)
+
+    def getNoteValue(self, note):
+        case = {
+            'C' : 0,
+            'C#' : 1,
+            'D' : 2,
+            'D#' : 3,
+            'E' : 4,
+            'F' : 5,
+            'F#' : 6,
+            'G' : 7,
+            'G#' : 8,
+            'A' : 9,
+            'A#' : 10,
+            'B' : 11
+        }
+        return case.get(note)
 
 if __name__ == '__main__':
     seq = NoteSequence('A Major', SOPRANO, 100)

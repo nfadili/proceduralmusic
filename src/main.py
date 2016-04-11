@@ -14,7 +14,7 @@ if __name__ == '__main__':
                 choices[1])         #Tempo
     key = choices[2]                #Key
     for i in range(song.trackCount):
-        seq = NoteSequence(key, BASS, 100)
+        seq = NoteSequence(key, SOPRANO, 100)
         seq.writeSequenceToTrack(song, i)
 
     song.markSongEnd()
