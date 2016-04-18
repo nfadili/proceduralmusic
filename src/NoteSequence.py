@@ -75,8 +75,7 @@ class NoteSequence:
         self.voice = voice          # Determines starting octave
         self.root = ''              # Set in the parseKey function
         self.keyDescription = ''
-        try: self.parseKey(key)
-        except InvalidKeyError: raise InvalidKeyError
+        self.parseKey(key)          # TODO: self.key = self.parseKey(key)
         self.noteHistory = []       # Start with only previous note, then look back farther. (Higher order markov chain).
         self.sequence = self.generate()
 
@@ -117,8 +116,10 @@ class NoteSequence:
         else:
             i = 0
             for i in range(len(key)):
+                #TODO: This might be where it's getting incremented
                 key[i] = (self.getNoteValue(self.root) + key[i]) % 12
             self.key = key
+            print(self.key)
 
     # Converts user specified key: 'C# Natural Minor' -> array of notes in key.
     #   Throws: InvalidKeyError if user defined key is not supported.
@@ -128,9 +129,14 @@ class NoteSequence:
             'natural minor' : MINOR_SCALE_NATURAL,
             'harmonic minor' : MINOR_SCALE_HARMONIC
         }
-        return case.get(str(token[0]).lower(), InvalidKeyError)
+        #TODO: MAJOR_SCALE is getting incremented somehow
+        try: intervalList = case.get(str(token[0]).lower(), InvalidKeyError)
+        except InvalidKeyError: raise InvalidKeyError
+        return list(intervalList)
 
     def noteProbabilities(self, noteValue):
+        #TODO SOMETHING WITH THE KEY LIST IS MESSED UP BAD. ONLY WORKS IN C MAJOR
+        chains = []
         # Root
         if noteValue == self.key[0]:
             chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
@@ -165,7 +171,6 @@ class NoteSequence:
             octave = self.voice
 
         # Probabilities for each interval
-        # Doesnt stay in key, bases the scale off of the current note not the tonic
         chooser = random.random()
         probs = self.noteProbabilities(self.noteHistory[-1].noteValue)
         if chooser < probs[0]: note = self.key[0]
@@ -186,6 +191,9 @@ class NoteSequence:
         # Generate new note
         return Note(note, octave, duration)
 
+    # Given a song object and track number, writes it's note sequence data to the
+    # specified track within the song object.
+    # TODO: This logic should be handled by the song object!
     def writeSequenceToTrack(self, song, trackNum):
         for note in self.sequence:
             song.addNoteToTrack(trackNum, note.letter, note.octave, note.duration)
