@@ -73,6 +73,7 @@ class NoteSequence:
     def __init__(self, key, voice, sequenceLength):
         self.length = sequenceLength
         self.voice = voice          # Determines starting octave
+        self.currentOctave = voice
         self.root = ''              # Set in the parseKey function
         self.keyDescription = ''
         self.parseKey(key)          # TODO: self.key = self.parseKey(key)
@@ -135,7 +136,6 @@ class NoteSequence:
         return list(intervalList)
 
     def noteProbabilities(self, noteValue):
-        #TODO SOMETHING WITH THE KEY LIST IS MESSED UP BAD. ONLY WORKS IN C MAJOR
         chains = []
         # Root
         if noteValue == self.key[0]:
@@ -161,14 +161,18 @@ class NoteSequence:
         return chains
 
     def getNextNote(self):
-        # 15% chance to go up an octave, 15% chance to go down an octave
         chooser = random.random()
-        if chooser < 0.15:
-            octave = self.voice - 1
-        elif chooser < 0.3:
-            octave = self.voice + 1
+
+        # 10% chance to go down an octave
+        if chooser < 0.1 and self.currentOctave >= self.voice:
+            self.currentOctave = self.currentOctave - 1
+        # 10% chance to go up an octave
+        elif chooser < 0.2 and self.currentOctave <= self.voice:
+            self.currentOctave = self.currentOctave + 1
         else:
-            octave = self.voice
+            octave = self.currentOctave
+        #Sets octave for next note
+        octave = self.currentOctave
 
         # Probabilities for each interval
         chooser = random.random()
@@ -182,11 +186,12 @@ class NoteSequence:
         elif chooser < probs[6]: note = self.key[6]
 
         # Probablities for each duration
-        chooser = random.random()
-        if chooser < 0.15: duration = HALF
-        elif chooser < 0.3: duration = QUARTER
-        elif chooser < 0.5: duration = EIGHTH
-        else: duration = SIXTEENTH
+        duration = SIXTEENTH
+        # chooser = random.random()
+        # if chooser < 0.15: duration = HALF
+        # elif chooser < 0.3: duration = QUARTER
+        # elif chooser < 0.5: duration = EIGHTH
+        # else: duration = SIXTEENTH
 
         # Generate new note
         return Note(note, octave, duration)
