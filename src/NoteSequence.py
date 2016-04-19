@@ -153,9 +153,7 @@ class NoteSequence:
         # Probabilities for each interval
         chooser = random.random()
 
-        probs = markovchains.firstOrderMarkovChain(self.key, self.noteHistory[-1].noteValue)
-        #probs = self.noteProbabilities(self.noteHistory[-1].noteValue)
-
+        probs = markovchains.firstOrderMarkovChain(self.key, self.noteHistory)
         if chooser < probs[0]: note = self.key[0]
         elif chooser < probs[1]: note = self.key[1]
         elif chooser < probs[2]: note = self.key[2]

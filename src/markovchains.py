@@ -1,4 +1,5 @@
-def firstOrderMarkovChain(key, interval):
+def firstOrderMarkovChain(key, noteHistory):
+    interval = noteHistory[-1].noteValue
     probs = []
     # Root
     if interval == key[0]:
@@ -22,3 +23,119 @@ def firstOrderMarkovChain(key, interval):
     if interval == key[6]:
         probs = [0.2, 0.35, 0.5, 0.65, 0.8, 0.95, 1]
     return probs
+
+def secondOrderMarkovChain(key, noteHistory):
+    prev = noteHistory[-1].noteValue
+    nextPrev = noteHistory[-1].noteValue
+    probs = []
+    #Root and...
+    if prev == key[0] and prevNext == key[0]:
+        return []
+    if prev == key[0] and prevNext == key[1]:
+        return []
+    if prev == key[0] and prevNext == key[2]:
+        return []
+    if prev == key[0] and prevNext == key[3]:
+        return []
+    if prev == key[0] and prevNext == key[4]:
+        return []
+    if prev == key[0] and prevNext == key[5]:
+        return []
+    if prev == key[0] and prevNext == key[6]:
+        return []
+
+    #2nd and...
+    if prev == key[1] and prevNext == key[0]:
+        return []
+    if prev == key[1] and prevNext == key[1]:
+        return []
+    if prev == key[1] and prevNext == key[2]:
+        return []
+    if prev == key[1] and prevNext == key[3]:
+        return []
+    if prev == key[1] and prevNext == key[4]:
+        return []
+    if prev == key[1] and prevNext == key[5]:
+        return []
+    if prev == key[1] and prevNext == key[6]:
+        return []
+
+    #3nd and...
+    if prev == key[2] and prevNext == key[0]:
+        return []
+    if prev == key[2] and prevNext == key[1]:
+        return []
+    if prev == key[2] and prevNext == key[2]:
+        return []
+    if prev == key[2] and prevNext == key[3]:
+        return []
+    if prev == key[2] and prevNext == key[4]:
+        return []
+    if prev == key[2] and prevNext == key[5]:
+        return []
+    if prev == key[2] and prevNext == key[6]:
+        return []
+
+    #4th and...
+    if prev == key[3] and prevNext == key[0]:
+        return []
+    if prev == key[3] and prevNext == key[1]:
+        return []
+    if prev == key[3] and prevNext == key[2]:
+        return []
+    if prev == key[3] and prevNext == key[3]:
+        return []
+    if prev == key[3] and prevNext == key[4]:
+        return []
+    if prev == key[3] and prevNext == key[5]:
+        return []
+    if prev == key[3] and prevNext == key[6]:
+        return []
+
+    #5th and...
+    if prev == key[4] and prevNext == key[0]:
+        return []
+    if prev == key[4] and prevNext == key[1]:
+        return []
+    if prev == key[4] and prevNext == key[2]:
+        return []
+    if prev == key[4] and prevNext == key[3]:
+        return []
+    if prev == key[4] and prevNext == key[4]:
+        return []
+    if prev == key[4] and prevNext == key[5]:
+        return []
+    if prev == key[4] and prevNext == key[6]:
+        return []
+
+    #6th and...
+    if prev == key[5] and prevNext == key[0]:
+        return []
+    if prev == key[5] and prevNext == key[1]:
+        return []
+    if prev == key[5] and prevNext == key[2]:
+        return []
+    if prev == key[5] and prevNext == key[3]:
+        return []
+    if prev == key[5] and prevNext == key[4]:
+        return []
+    if prev == key[5] and prevNext == key[5]:
+        return []
+    if prev == key[5] and prevNext == key[6]:
+        return []
+
+    #7th and...
+    if prev == key[6] and prevNext == key[0]:
+        return []
+    if prev == key[6] and prevNext == key[1]:
+        return []
+    if prev == key[6] and prevNext == key[2]:
+        return []
+    if prev == key[6] and prevNext == key[3]:
+        return []
+    if prev == key[6] and prevNext == key[4]:
+        return []
+    if prev == key[6] and prevNext == key[5]:
+        return []
+    if prev == key[6] and prevNext == key[6]:
+        return []
