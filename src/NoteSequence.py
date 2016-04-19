@@ -1,5 +1,6 @@
 from Song import *
 from constants import *
+import markovchains
 import random
 from pprint import pprint
 
@@ -135,31 +136,6 @@ class NoteSequence:
         except InvalidKeyError: raise InvalidKeyError
         return list(intervalList)
 
-    def noteProbabilities(self, noteValue):
-        chains = []
-        # Root
-        if noteValue == self.key[0]:
-            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
-        # 2nd
-        if noteValue == self.key[1]:
-            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
-        # 3rd
-        if noteValue == self.key[2]:
-            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
-        # 4th
-        if noteValue == self.key[3]:
-            chains = [0.2, 0.4, 0.55, 0.6, 0.8, 0.95, 1]
-        # 5th
-        if noteValue == self.key[4]:
-            chains = [0.05, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
-        # 6th
-        if noteValue == self.key[5]:
-            chains = [0.05, 0.2, 0.4, 0.65, 0.7, 0.8, 1]
-        # 7th
-        if noteValue == self.key[6]:
-            chains = [0.4, 0.45, 0.55, 0.75, 0.85, 0.95, 1]
-        return chains
-
     def getNextNote(self):
         chooser = random.random()
 
@@ -176,7 +152,10 @@ class NoteSequence:
 
         # Probabilities for each interval
         chooser = random.random()
-        probs = self.noteProbabilities(self.noteHistory[-1].noteValue)
+
+        probs = markovchains.firstOrderMarkovChain(self.key, self.noteHistory[-1].noteValue)
+        #probs = self.noteProbabilities(self.noteHistory[-1].noteValue)
+
         if chooser < probs[0]: note = self.key[0]
         elif chooser < probs[1]: note = self.key[1]
         elif chooser < probs[2]: note = self.key[2]
@@ -186,12 +165,11 @@ class NoteSequence:
         elif chooser < probs[6]: note = self.key[6]
 
         # Probablities for each duration
-        duration = SIXTEENTH
-        # chooser = random.random()
-        # if chooser < 0.15: duration = HALF
-        # elif chooser < 0.3: duration = QUARTER
-        # elif chooser < 0.5: duration = EIGHTH
-        # else: duration = SIXTEENTH
+        chooser = random.random()
+        if chooser < 0.15: duration = HALF
+        elif chooser < 0.3: duration = QUARTER
+        elif chooser < 0.5: duration = EIGHTH
+        else: duration = SIXTEENTH
 
         # Generate new note
         return Note(note, octave, duration)
@@ -221,5 +199,6 @@ class NoteSequence:
         return case.get(note)
 
 if __name__ == '__main__':
+    # TESTING
     seq = NoteSequence('A Major', SOPRANO, 100)
     seq.writeSequenceToTrack()
