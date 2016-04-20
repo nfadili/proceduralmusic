@@ -1,6 +1,6 @@
 from Song import *
 from constants import *
-import markovchains
+import probabilities
 import random
 from pprint import pprint
 
@@ -79,6 +79,7 @@ class NoteSequence:
         self.keyDescription = ''
         self.parseKey(key)          # TODO: self.key = self.parseKey(key)
         self.noteHistory = []       # Start with only previous note, then look back farther. (Higher order markov chain).
+        self.durationHistory = []   # List of previous note durations
         self.sequence = self.generate()
 
     def __str__(self):
@@ -100,8 +101,9 @@ class NoteSequence:
     def generate(self):
         random.seed()           # For note probabilities
         seq = [Note(self.root, self.voice, EIGHTH, 20)] #Note(note, octave, duration, velocity)
-        self.noteHistory.append(Note(self.root, self.voice, EIGHTH, 20))
-        while len(seq) < self.length:
+        self.noteHistory.append(Note(self.root, self.voice, QUARTER, 20))
+        self.durationHistory.append(QUARTER)    #TODO: Hard coding a starting duration is ugly!
+        while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
             newNote = self.getNextNote()
             seq.append(newNote)
             self.noteHistory.append(newNote)
@@ -118,10 +120,8 @@ class NoteSequence:
         else:
             i = 0
             for i in range(len(key)):
-                #TODO: This might be where it's getting incremented
                 key[i] = (self.getNoteValue(self.root) + key[i]) % 12
             self.key = key
-            print(self.key)
 
     # Converts user specified key: 'C# Natural Minor' -> array of notes in key.
     #   Throws: InvalidKeyError if user defined key is not supported.
@@ -130,8 +130,8 @@ class NoteSequence:
             'major' : MAJOR_SCALE,
             'natural minor' : MINOR_SCALE_NATURAL,
             'harmonic minor' : MINOR_SCALE_HARMONIC
+            #TODO: Add more scales
         }
-        #TODO: MAJOR_SCALE is getting incremented somehow
         try: intervalList = case.get(str(token[0]).lower(), InvalidKeyError)
         except InvalidKeyError: raise InvalidKeyError
         return list(intervalList)
@@ -153,7 +153,12 @@ class NoteSequence:
         # Probabilities for each interval
         chooser = random.random()
 
-        probs = markovchains.firstOrderMarkovChain(self.key, self.noteHistory)
+        #First order markov chain
+        probs = probabilities.firstOrderMarkovChain(self.key, self.noteHistory)
+
+        #Second order markov chain
+        # probs = probabilities.secondOrderMarkovChain(self.key, self.noteHistory)
+
         if chooser < probs[0]: note = self.key[0]
         elif chooser < probs[1]: note = self.key[1]
         elif chooser < probs[2]: note = self.key[2]
@@ -164,10 +169,22 @@ class NoteSequence:
 
         # Probablities for each duration
         chooser = random.random()
-        if chooser < 0.15: duration = HALF
-        elif chooser < 0.3: duration = QUARTER
-        elif chooser < 0.5: duration = EIGHTH
-        else: duration = SIXTEENTH
+
+        #Duration algorithm probabilities
+        probs = probabilities.durationDecider(self.durationHistory)
+
+        if chooser < probs[0]:
+            duration = HALF
+            self.durationHistory.append(HALF)
+        elif chooser < probs[1]:
+            duration = QUARTER
+            self.durationHistory.append(QUARTER)
+        elif chooser < probs[2]:
+            duration = EIGHTH
+            self.durationHistory.append(EIGHTH)
+        elif chooser < probs[3]:
+            duration = SIXTEENTH
+            self.durationHistory.append(SIXTEENTH)
 
         # Generate new note
         return Note(note, octave, duration)

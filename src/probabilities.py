@@ -1,3 +1,29 @@
+from constants import *
+
+def durationDecider(durationHistory):
+    prev = durationHistory[-1]
+
+    if prev == HALF:
+        return [.35, .7, .9, 1]
+    if prev == QUARTER:
+        return [.25, .6, .8, 1]
+    if prev == EIGHTH:
+        if durationHistory[-2] == EIGHTH:
+            return [.25, .5, .75, 1]
+        else:
+            return [.05, .3, .7, 1]
+    if prev == SIXTEENTH:
+        if durationHistory[-2] is not SIXTEENTH:        #[?, ?, ?, 16]
+            return [0, 0, 0, 1]
+        else:
+            if durationHistory[-3] is not SIXTEENTH:    #[?, ?, 16, 16]
+                return [.05, .3, .6, 1]
+            else:
+                if durationHistory[-4] is not SIXTEENTH:#[?, 16, 16, 16]
+                    return [0, 0, 0, 1]
+                else:                                   #[16, 16, 16, 16]
+                    return [.2, .4, .6, 1]
+
 def firstOrderMarkovChain(key, noteHistory):
     interval = noteHistory[-1].noteValue
     probs = []
