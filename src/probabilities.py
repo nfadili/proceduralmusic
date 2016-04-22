@@ -2,27 +2,34 @@ from constants import *
 
 def durationDecider(durationHistory):
     prev = durationHistory[-1]
-
     if prev == HALF:
+        #Handle multiple occurences with different probs
         return [.35, .7, .9, 1]
     if prev == QUARTER:
+        #handle multiple occurences with different probs
         return [.25, .6, .8, 1]
+
     if prev == EIGHTH:
-        if durationHistory[-2] == EIGHTH:
-            return [.25, .5, .75, 1]
-        else:
-            return [.05, .3, .7, 1]
+        durSum = 0;
+        i = -1
+        while durationHistory[i] == EIGHTH:
+            i -= 1
+            durSum += 1
+        if durSum % 5 == 0: return [.05, .2, .75, 1]        #[8, 8, 8, 8, 8]
+        if durSum % 3 == 0: return [.1, .3, .8, 1]          #[8, 8, 8]
+        if durSum % 2 == 0: return [.15, .4, .75, 1]        #[8, 8]
+        else: return [.05, .3, .7, 1]                       #[?, 8]
+
     if prev == SIXTEENTH:
-        if durationHistory[-2] is not SIXTEENTH:        #[?, ?, ?, 16]
-            return [0, 0, 0, 1]
-        else:
-            if durationHistory[-3] is not SIXTEENTH:    #[?, ?, 16, 16]
-                return [.05, .3, .6, 1]
-            else:
-                if durationHistory[-4] is not SIXTEENTH:#[?, 16, 16, 16]
-                    return [0, 0, 0, 1]
-                else:                                   #[16, 16, 16, 16]
-                    return [.2, .4, .6, 1]
+        durSum = 0;
+        i = -1
+        while durationHistory[i] == SIXTEENTH:
+            i -= 1
+            durSum += 1
+        if durSum % 8 == 0: return [.2, .5, .75, 1]         #[16, 16, 16, 16, 16, 16, 16, 16]
+        if durSum % 4 == 0: return [.1, .4, .65, 1]         #[16, 16, 16, 16]
+        if durSum % 2 == 0: return [.05, .3, .6, 1]         #[16, 16]
+        else: return [0, 0, 0, 1]                           #odd number of 16ths
 
 def firstOrderMarkovChain(key, noteHistory):
     interval = noteHistory[-1].noteValue
@@ -56,11 +63,11 @@ def secondOrderMarkovChain(key, noteHistory):
     probs = []
     #Root and...
     if prev == key[0] and prevNext == key[0]:
-        return []
+        return [.05, .5, .4, .55, .7, .85, 1]
     if prev == key[0] and prevNext == key[1]:
-        return []
+        return [.1, .15, .45, .65, .75, .85, 1]
     if prev == key[0] and prevNext == key[2]:
-        return []
+        return [.05, .5, .4, .55, .7, .85, 1]
     if prev == key[0] and prevNext == key[3]:
         return []
     if prev == key[0] and prevNext == key[4]:
