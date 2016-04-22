@@ -78,7 +78,7 @@ class NoteSequence:
         self.root = ''              # Set in the parseKey function
         self.keyDescription = ''
         self.parseKey(key)          # TODO: self.key = self.parseKey(key)
-        self.noteHistory = []       # Start with only previous note, then look back farther. (Higher order markov chain).
+        self.noteHistory = []       # List of previous note values
         self.durationHistory = []   # List of previous note durations
         self.sequence = self.generate()
 
@@ -100,7 +100,7 @@ class NoteSequence:
     # overall logic.
     def generate(self):
         random.seed()           # For note probabilities
-        seq = [Note(self.root, self.voice, EIGHTH, 20)] #Note(note, octave, duration, velocity)
+        seq = [Note(self.root, self.voice, QUARTER, 20)] #Note(note, octave, duration, velocity)
         self.noteHistory.append(Note(self.root, self.voice, QUARTER, 20))
         self.durationHistory.append(QUARTER)    #TODO: Hard coding a starting duration is ugly!
         while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
@@ -136,6 +136,9 @@ class NoteSequence:
         except InvalidKeyError: raise InvalidKeyError
         return list(intervalList)
 
+    # Determines next note to added by calling helper algorithms for
+    # the note value and duration. Octave is dtermined randomly in the range
+    # of +1 or -1.
     def getNextNote(self):
         chooser = random.random()
 
@@ -145,20 +148,13 @@ class NoteSequence:
         # 10% chance to go up an octave
         elif chooser < 0.2 and self.currentOctave <= self.voice:
             self.currentOctave = self.currentOctave + 1
-        else:
-            octave = self.currentOctave
         #Sets octave for next note
         octave = self.currentOctave
 
         # Probabilities for each interval
         chooser = random.random()
-
         #First order markov chain
         probs = probabilities.firstOrderMarkovChain(self.key, self.noteHistory)
-
-        #Second order markov chain
-        # probs = probabilities.secondOrderMarkovChain(self.key, self.noteHistory)
-
         if chooser < probs[0]: note = self.key[0]
         elif chooser < probs[1]: note = self.key[1]
         elif chooser < probs[2]: note = self.key[2]
