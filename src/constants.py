@@ -32,8 +32,8 @@ NOTES_IN_OCTAVE = 12
 # Voice Ranges (Octave lies midway through the voice range) #
 BASS = 2
 TENOR = 3
-ALTO = 4
-SOPRANO = 5
+ALTO = 5
+SOPRANO = 6
 
 # Steps #
 HALF = 1
