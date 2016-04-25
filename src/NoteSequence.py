@@ -171,6 +171,7 @@ class NoteSequence:
         for note in motif:
             note.octave = self.currentOctave
             seq.append(note)
+            self.durationHistory.append(note.duration)
         self.noteHistory.append(motif[-1])
 
 
