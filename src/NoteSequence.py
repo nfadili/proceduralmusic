@@ -1,5 +1,7 @@
 from Song import *
+from Note import *
 from constants import *
+from Motifs import *
 import probabilities
 import random
 from pprint import pprint
@@ -15,55 +17,6 @@ class InvalidKeyError(NoteSequenceError):
         self.msg = msg
 
 ################################################################################
-# Inner class
-################################################################################
-class Note:
-    def __init__(self, letter, octave, duration, velocity=20):
-        if type(letter) is str: self.letter = letter
-        elif type(letter) is int: self.letter = self.getNoteLetter(letter)
-        self.octave = octave
-        self.duration = duration
-        self.velocity = velocity
-        self.noteValue = self.getNoteValue(self.letter)
-
-    def __str__(self):
-        return '(' + self.letter + ', ' + str(self.octave) + ', ' + str(self.duration)\
-               + ', ' + str(self.velocity) + ')'
-
-    def getNoteValue(self, note):
-        case = {
-            'C' : 0,
-            'C#' : 1,
-            'D' : 2,
-            'D#' : 3,
-            'E' : 4,
-            'F' : 5,
-            'F#' : 6,
-            'G' : 7,
-            'G#' : 8,
-            'A' : 9,
-            'A#' : 10,
-            'B' : 11
-        }
-        return case.get(note)
-    def getNoteLetter(self, value):
-        case = {
-            0 : 'C',
-            1 : 'C#',
-            2 : 'D',
-            3 : 'D#',
-            4 : 'E',
-            5 : 'F',
-            6 : 'F#',
-            7 : 'G',
-            8 : 'G#',
-            9 : 'A',
-            10 : 'A#',
-            11 : 'B'
-        }
-        return case.get(value)
-
-################################################################################
 # NoteSequence class
 ################################################################################
 # This class enforces music theory rules while generating sequences of notes for
@@ -72,6 +25,7 @@ class Note:
 class NoteSequence:
 
     def __init__(self, key, voice, sequenceLength):
+        self.motifs = Motifs('db/motif_text_db.txt').fixedMotifs    #Pass file for loading
         self.length = sequenceLength
         self.voice = voice          # Determines starting octave
         self.currentOctave = voice
@@ -81,6 +35,7 @@ class NoteSequence:
         self.noteHistory = []       # List of previous note values
         self.durationHistory = []   # List of previous note durations
         self.sequence = self.generate()
+        print(self.motifs)
 
     def __str__(self):
         case = {
@@ -106,6 +61,8 @@ class NoteSequence:
         while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
             newNote = self.getNextNote()
             seq.append(newNote)
+            if (len(seq) % 8 == 0):
+                self.getMotif(seq)
             self.noteHistory.append(newNote)
         return seq
 
@@ -208,6 +165,14 @@ class NoteSequence:
             'B' : 11
         }
         return case.get(note)
+
+    def getMotif(self, seq):
+        motif = self.motifs[random.randint(0, len(self.motifs)-1)]
+        for note in motif:
+            note.octave = self.currentOctave
+            seq.append(note)
+        self.noteHistory.append(motif[-1])
+
 
 if __name__ == '__main__':
     # TESTING
