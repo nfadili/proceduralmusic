@@ -31,7 +31,7 @@ class Motifs:
             'H' : HALF,
             'Q' : QUARTER,
             'E' : EIGHTH,
-            'S' : SIXTEENTH
+            'S' : SIXTEENTH,
             'T' : THIRTY_SECOND,
             'F' : SIXTY_FOURTH
         }
