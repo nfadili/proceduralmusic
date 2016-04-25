@@ -18,7 +18,8 @@ class Motifs:
             motif = []
             octave = randint(2, 7)
             for note in seq:
-                motif.append(Note(int(note[0]), octave, self.getDurationValue(note[1])))
+                motif.append((int(note[0]), int(self.getDurationValue(note[1]))))
+                # motif.append(Note(int(note[0]), octave, self.getDurationValue(note[1])))
             motifList.append(motif)
         return motifList
 

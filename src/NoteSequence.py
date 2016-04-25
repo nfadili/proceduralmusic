@@ -169,10 +169,11 @@ class NoteSequence:
     def getMotif(self, seq):
         motif = self.motifs[random.randint(0, len(self.motifs)-1)]
         for note in motif:
-            note.octave = self.currentOctave
-            seq.append(note)
-            self.durationHistory.append(note.duration)
-        self.noteHistory.append(motif[-1])
+            noteInKey = self.key[note[0]]
+            duration = int(note[1])
+            seq.append(Note(self.key[note[0]], self.currentOctave, int(note[1])))
+            self.durationHistory.append(duration)
+            self.noteHistory.append(noteInKey)
 
 
 if __name__ == '__main__':
