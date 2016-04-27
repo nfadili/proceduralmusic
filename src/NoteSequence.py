@@ -35,7 +35,6 @@ class NoteSequence:
         self.noteHistory = []       # List of previous note values
         self.durationHistory = []   # List of previous note durations
         self.sequence = self.generate()
-        print(self.motifs)
 
     def __str__(self):
         case = {
@@ -61,7 +60,7 @@ class NoteSequence:
         while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
             newNote = self.getNextNote()
             seq.append(newNote)
-            if (len(seq) % 8 == 0):
+            if (len(seq) % 8 == 0 and self.checkDurationHistory()):
                 self.getMotif(seq)
             self.noteHistory.append(newNote)
         return seq
@@ -118,7 +117,7 @@ class NoteSequence:
         elif chooser < probs[3]: note = self.key[3]
         elif chooser < probs[4]: note = self.key[4]
         elif chooser < probs[5]: note = self.key[5]
-        elif chooser < probs[6]: note = self.key[6]
+        elif chooser <= probs[6]: note = self.key[6]
 
         # Probablities for each duration
         chooser = random.random()
@@ -135,7 +134,7 @@ class NoteSequence:
         elif chooser < probs[2]:
             duration = EIGHTH
             self.durationHistory.append(EIGHTH)
-        elif chooser < probs[3]:
+        elif chooser <= probs[3]:
             duration = SIXTEENTH
             self.durationHistory.append(SIXTEENTH)
 
@@ -175,6 +174,18 @@ class NoteSequence:
             self.durationHistory.append(duration)
             self.noteHistory.append(noteInKey)
 
+    def checkDurationHistory(self):
+        firstNote = self.durationHistory[-1]
+        if firstNote is SIXTEENTH:
+            count = 0
+            i = -1
+            while(self.durationHistory[i] is SIXTEENTH):    # Might check out of bounds if quarter note isnt the first note
+                count += 1
+                i -= 1
+            if count % 2 == 0: return True
+            else : return False
+        else:
+            return True
 
 if __name__ == '__main__':
     # TESTING

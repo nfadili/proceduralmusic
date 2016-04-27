@@ -1,2 +1,6 @@
 0S, 1S, 2S, 3S, 4S, 5S, 6S
 0Q, 5Q, 3E, 4E, 6Q
+5E, 3E, 2E, 4E, 2E, 1E
+5S, 3S, 2S, 4S, 2E, 1E
+3E, 1E, 5E, 4Q, 6E
+6S, 4S, 3E, 5S, 3S, 1E
