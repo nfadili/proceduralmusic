@@ -60,7 +60,7 @@ class NoteSequence:
         while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
             newNote = self.getNextNote()
             seq.append(newNote)
-            if (len(seq) % 8 == 0 and self.checkDurationHistory()):
+            if (len(seq) % random.randint(1, 5) == 0 and self.checkDurationHistory()):
                 self.getMotif(seq)
             self.noteHistory.append(newNote)
         return seq
