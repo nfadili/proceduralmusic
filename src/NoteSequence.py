@@ -25,15 +25,15 @@ class InvalidKeyError(NoteSequenceError):
 class NoteSequence:
 
     def __init__(self, key, voice, sequenceLength):
-        self.motifs = Motifs('db/motif_text_db.txt').fixedMotifs    #Pass file for loading
+        self.motifs = self.loadMotifs(voice)    #Loads matching voice file
         self.length = sequenceLength
-        self.voice = voice          # Determines starting octave
+        self.voice = voice                      # Determines starting octave
         self.currentOctave = voice
-        self.root = ''              # Set in the parseKey function
+        self.root = ''                          # Set in the parseKey function
         self.keyDescription = ''
-        self.parseKey(key)          # TODO: self.key = self.parseKey(key)
-        self.noteHistory = []       # List of previous note values
-        self.durationHistory = []   # List of previous note durations
+        self.parseKey(key)                      # TODO: self.key = self.parseKey(key)
+        self.noteHistory = []                   # List of previous note values
+        self.durationHistory = []               # List of previous note durations
         self.sequence = self.generate()
 
     def __str__(self):
@@ -165,6 +165,15 @@ class NoteSequence:
             'B' : 11
         }
         return case.get(note)
+
+    def loadMotifs(self, voice):
+        case = {
+            BASS : 'db/motif_text_db_bass.txt',
+            TENOR : 'db/motif_text_db_tenor.txt',
+            ALTO : 'db/motif_text_db_alto.txt',
+            SOPRANO : 'db/motif_text_db_soprano.txt'
+        }
+        return Motifs(case.get(voice)).fixedMotifs
 
     def getMotif(self, seq):
         motif = self.motifs[random.randint(0, len(self.motifs)-1)]
