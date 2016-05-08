@@ -61,7 +61,7 @@ class NoteSequence:
             newNote = self.getNextNote()
             seq.append(newNote)
             # Determines how often to insert a motif
-            if (len(seq) % 8 == 0 and self.checkDurationHistory()):
+            if self.determineToAddMotif(len(seq)):
                 self.getMotif(seq)
             self.noteHistory.append(newNote)
         return seq
@@ -183,6 +183,18 @@ class NoteSequence:
             seq.append(Note(self.key[note[0]], self.currentOctave, int(note[1])))
             self.durationHistory.append(duration)
             self.noteHistory.append(noteInKey)
+
+    # Determines the frequency of adding from the motif db. The lower the mod amount
+    # the more often a motif is inserted.
+    def determineToAddMotif(self, count):
+        if self.voice is SOPRANO:
+            return (count % 8 == 0 and self.checkDurationHistory())
+        if self.voice is TENOR:
+            return (count % 6 == 0 and self.checkDurationHistory())
+        if self.voice is ALTO:
+            return (count % 4 == 0 and self.checkDurationHistory())
+        if self.voice is BASS:
+            return (count % 2 == 0 and self.checkDurationHistory())
 
     def checkDurationHistory(self):
         firstNote = self.durationHistory[-1]
