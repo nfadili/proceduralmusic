@@ -4,7 +4,6 @@ from constants import *
 from Motifs import *
 import probabilities
 import random
-from pprint import pprint
 
 ################################################################################
 # Exception definitions
@@ -85,8 +84,11 @@ class NoteSequence:
     def defineKey(self, token):
         case = {
             'major' : MAJOR_SCALE,
-            'natural minor' : MINOR_SCALE_NATURAL,
-            'harmonic minor' : MINOR_SCALE_HARMONIC
+            'minor' : MINOR_SCALE_NATURAL,
+            'harmonic minor' : MINOR_SCALE_HARMONIC,
+            'gypsy' : GYPSY_SCALE,
+            'neopolitan' : MAJOR_SCALE_NEOPOLITAN,
+            'flamenco' : FLAMENCO_SCALE
             #TODO: Add more scales
         }
         try: intervalList = case.get(str(token[0]).lower(), InvalidKeyError)
