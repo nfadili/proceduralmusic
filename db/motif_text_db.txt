@@ -1,7 +1,12 @@
-0S, 1S, 2S, 3S, 4S, 5S, 6S
-0S, 2S, 4S, 2S, 4S, 6S
-6E, 4E, 2E, 5E, 3E, 1E, 0Q, 4Q
-0H, 4Q, 3Q, 6Q
-2S, 1S, 0S, 5S, 4S, 3S
-0E, 6Q, 2E, 6E, 0Q
-6S, 5S, 4S, 3S, 2S, 1S, 0S
+0H, 4H, 6Q, 3Q
+0H, 4H, 6Q, 2Q
+5H, 4H, 3Q, 4Q
+0H, 5H, 3Q, 4Q
+0H, 3H, 5Q, 5Q
+0H, 4H, 3Q, 4Q
+0Q, 4Q, 6Q, 3Q
+0Q, 4Q, 6Q, 2Q
+5Q, 4Q, 3Q, 4Q
+0Q, 5Q, 3Q, 4Q
+0Q, 3Q, 5Q, 5Q
+0Q, 4Q, 3Q, 4Q

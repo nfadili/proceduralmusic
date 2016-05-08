@@ -23,15 +23,15 @@ SIXTY_FOURTH = 64
 MICROSECONDS_PER_MINUTE = 60000000
 
 # Music Theory Rules #
-MIN_OCTAVE = 0
+MIN_OCTAVE = 1
 MAX_OCTAVE = 8
 NOTES_IN_OCTAVE = 12
 
 # Algorithm Rules
 
 # Voice Ranges (Octave lies midway through the voice range) #
-BASS = 2
-TENOR = 3
+BASS = 3
+TENOR = 4
 ALTO = 5
 SOPRANO = 6
 
