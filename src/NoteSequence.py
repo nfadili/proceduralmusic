@@ -58,20 +58,20 @@ class NoteSequence:
         self.noteHistory.append(Note(self.root, self.voice, QUARTER, 20))
         self.durationHistory.append(QUARTER)    #TODO: Hard coding a starting duration is ugly!
         while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
+            print(self.noteHistory)
             newNote = self.getNextNote()
             seq.append(newNote)
+            self.noteHistory.append(newNote)
 
             #Potentially save a passage thats been generated.
             self.determineToSavePassage()
 
             # Check if its time to insert a passage
-            print(len(self.passages))
             if (len(self.passages) is not 0 and len(seq) % 4 is 0):
                 self.addPassageToTrack()
             # Determines how often to insert a motif
             if self.determineToAddMotif(len(seq)):
                 self.getMotif(seq)
-            self.noteHistory.append(newNote)
         return seq
 
     # Sets NoteSequence.key = the array.
@@ -191,9 +191,10 @@ class NoteSequence:
         for note in motif:
             noteInKey = self.key[note[0]]
             duration = int(note[1])
-            seq.append(Note(self.key[note[0]], self.currentOctave, int(note[1])))
+            newNote = Note(self.key[note[0]], self.currentOctave, int(note[1]))
+            seq.append(newNote)
             self.durationHistory.append(duration)
-            self.noteHistory.append(noteInKey)
+            self.noteHistory.append(newNote)
 
     # Determines the frequency of adding from the motif db. The lower the mod amount
     # the more often a motif is inserted.
@@ -221,44 +222,16 @@ class NoteSequence:
             return True
 
     def addPassageToTrack(self):
-        passage = self.findPassage()
-        for note in passage:
-            self.seq.append(note)
-            self.noteHistory.append(note)
-            self.durationHistory.append(note.duration)
-        print("Added Passage!")
-        print(passage)
+        pass
 
     def savePassage(self):
-        measureCount = 0
-        lookbackCounter = -2
-        newPassage = []
-        newPassage.append(self.noteHistory[-1])
-        measureCount += self.noteHistory[-1].duration
-        while measureCount % MIDI_WHOLE is not 0:
-            newPassage.append(self.noteHistory[lookbackCounter])
-            measureCount += self.noteHistory[lookbackCounter].duration
-            lookbackCounter -= 1
-        self.passages.append(newPassage.reverse())
-        print("Saved Passage!")
-        print(self.passages[0])
-        print(newPassage)
-        print(self.passages[0])
+        pass
 
     def findPassage(self):
-        print("Found Passage!")
-        return self.passages[random.randint(0, len(self.passages))]
+        pass
 
     def determineToSavePassage(self):
-        count = 0
-        lookbackCounter = -1
-        while count % MIDI_WHOLE is not 0 or lookbackCounter < len(self.noteHistory) * -1:
-            lookbackCounter -= 1
-            print(lookbackCounter)
-            print(len(self.noteHistory))
-            count += self.noteHistory[lookbackCounter].duration
-        if count % MIDI_WHOLE is 0:
-            self.savePassage()
+        pass
 
 
 if __name__ == '__main__':
