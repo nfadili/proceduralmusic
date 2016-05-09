@@ -25,6 +25,7 @@ class NoteSequence:
 
     def __init__(self, key, voice, sequenceLength):
         self.motifs = self.loadMotifs(voice)    #Loads matching voice file
+        self.passages = []                      # Holds previously generated chunks of music
         self.length = sequenceLength
         self.voice = voice                      # Determines starting octave
         self.currentOctave = voice
@@ -59,6 +60,14 @@ class NoteSequence:
         while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
             newNote = self.getNextNote()
             seq.append(newNote)
+
+            #Potentially save a passage thats been generated.
+            self.determineToSavePassage()
+
+            # Check if its time to insert a passage
+            print(len(self.passages))
+            if (len(self.passages) is not 0 and len(seq) % 4 is 0):
+                self.addPassageToTrack()
             # Determines how often to insert a motif
             if self.determineToAddMotif(len(seq)):
                 self.getMotif(seq)
@@ -190,13 +199,13 @@ class NoteSequence:
     # the more often a motif is inserted.
     def determineToAddMotif(self, count):
         if self.voice is SOPRANO:
-            return (count % 8 == 0 and self.checkDurationHistory())
+            return (count % 10 == 0 and self.checkDurationHistory())
         if self.voice is TENOR:
-            return (count % 6 == 0 and self.checkDurationHistory())
+            return (count % 8 == 0 and self.checkDurationHistory())
         if self.voice is ALTO:
-            return (count % 4 == 0 and self.checkDurationHistory())
+            return (count % 6 == 0 and self.checkDurationHistory())
         if self.voice is BASS:
-            return (count % 2 == 0 and self.checkDurationHistory())
+            return (count % 4 == 0 and self.checkDurationHistory())
 
     def checkDurationHistory(self):
         firstNote = self.durationHistory[-1]
@@ -210,6 +219,47 @@ class NoteSequence:
             else : return False
         else:
             return True
+
+    def addPassageToTrack(self):
+        passage = self.findPassage()
+        for note in passage:
+            self.seq.append(note)
+            self.noteHistory.append(note)
+            self.durationHistory.append(note.duration)
+        print("Added Passage!")
+        print(passage)
+
+    def savePassage(self):
+        measureCount = 0
+        lookbackCounter = -2
+        newPassage = []
+        newPassage.append(self.noteHistory[-1])
+        measureCount += self.noteHistory[-1].duration
+        while measureCount % MIDI_WHOLE is not 0:
+            newPassage.append(self.noteHistory[lookbackCounter])
+            measureCount += self.noteHistory[lookbackCounter].duration
+            lookbackCounter -= 1
+        self.passages.append(newPassage.reverse())
+        print("Saved Passage!")
+        print(self.passages[0])
+        print(newPassage)
+        print(self.passages[0])
+
+    def findPassage(self):
+        print("Found Passage!")
+        return self.passages[random.randint(0, len(self.passages))]
+
+    def determineToSavePassage(self):
+        count = 0
+        lookbackCounter = -1
+        while count % MIDI_WHOLE is not 0 or lookbackCounter < len(self.noteHistory) * -1:
+            lookbackCounter -= 1
+            print(lookbackCounter)
+            print(len(self.noteHistory))
+            count += self.noteHistory[lookbackCounter].duration
+        if count % MIDI_WHOLE is 0:
+            self.savePassage()
+
 
 if __name__ == '__main__':
     # TESTING
