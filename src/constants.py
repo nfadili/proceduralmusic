@@ -28,6 +28,8 @@ MAX_OCTAVE = 8
 NOTES_IN_OCTAVE = 12
 
 # Algorithm Rules
+PASSAGE_LENGTH = 4
+PASSAGE_RATIO = 4
 
 # Voice Ranges (Octave lies midway through the voice range) #
 BASS = 3

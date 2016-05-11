@@ -58,18 +58,20 @@ class NoteSequence:
         self.noteHistory.append(Note(self.root, self.voice, QUARTER, 20))
         self.durationHistory.append(QUARTER)    #TODO: Hard coding a starting duration is ugly!
         while len(seq) < self.length:           #      QUARTER IS NEEDED FOR THE ALGORITHM TO WORK
-            print(self.noteHistory)
+            #Add new note
             newNote = self.getNextNote()
             seq.append(newNote)
             self.noteHistory.append(newNote)
 
-            #Potentially save a passage thats been generated.
+            # Potentially save a passage thats been generated.
             self.determineToSavePassage()
 
             # Check if its time to insert a passage
-            if (len(self.passages) is not 0 and len(seq) % 4 is 0):
-                self.addPassageToTrack()
-            # Determines how often to insert a motif
+            if (len(self.passages) is not 0 and len(seq) % PASSAGE_RATIO is 0 and self.checkDurationHistory()):
+                print("Entered")
+                self.addPassageToTrack(seq)
+
+            # Check if it's time to insert a motif
             if self.determineToAddMotif(len(seq)):
                 self.getMotif(seq)
         return seq
@@ -221,17 +223,36 @@ class NoteSequence:
         else:
             return True
 
-    def addPassageToTrack(self):
-        pass
+    # Adds a previously generated passage in the sequences current octave to the master sequence
+    def addPassageToTrack(self, seq):
+        passage = self.findPassage()
+        for note in passage:
+            newNoteVal = note.noteValue
+            newNoteDuration = note.duration
+            newNote = Note(newNoteVal, self.currentOctave, newNoteDuration)
+            seq.append(newNote)        #self??
+            self.durationHistory.append(newNoteDuration)
+            self.noteHistory.append(newNote)
+        print('Added passage')
 
-    def savePassage(self):
-        pass
-
+    # Returns a random passage from the list of passages
     def findPassage(self):
-        pass
+        return self.passages[random.randint(0, len(self.passages)-1)]
 
+    # Determines if a passage of length PASSAGE_LENGTH exists in the sequence so far
     def determineToSavePassage(self):
-        pass
+        measureCount = 0
+        backCounter = -1
+        newPassage = []
+        for i in range(len(self.noteHistory)):
+            measureCount += 1 / self.noteHistory[backCounter].duration  #whole = (1/1), half = (1/2), quarter = (1/4)
+            newPassage.append(self.noteHistory[backCounter])
+            if measureCount % PASSAGE_LENGTH is 0:
+                self.passages.append(newPassage)
+            backCounter -= 1
+        print("None")
+        return None #Empty list?
+
 
 
 if __name__ == '__main__':
