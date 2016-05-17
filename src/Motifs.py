@@ -37,6 +37,3 @@ class Motifs:
             'F' : SIXTY_FOURTH
         }
         return case.get(letter)
-
-if __name__ == '__main__':
-    test = Motifs('db/motif_text_db.txt')

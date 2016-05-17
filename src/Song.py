@@ -59,38 +59,6 @@ class Song:
             data.append(int(digit, 16))
         return data
 
-if __name__ == '__main__':
-    song = Song(2, 180)
-    song.addNoteToTrack(0, 'A', 4, QUARTER)
-    song.addNoteToTrack(0, 'C', 5, HALF)
-    song.addNoteToTrack(0, 'E', 4, HALF)
-    song.addTempoEvent(120)
-    song.addNoteToTrack(0, 'C', 4, HALF)
-    song.addTempoEvent(80)
-    song.addNoteToTrack(0, 'A', 4, QUARTER)
-    song.addNoteToTrack(0, 'C', 5, HALF)
-    song.addNoteToTrack(0, 'E', 4, HALF)
-    song.addNoteToTrack(0, 'C', 4, HALF)
-    song.addTempoEvent(100)
-    song.addNoteToTrack(0, 'A', 4, QUARTER)
-    song.addNoteToTrack(0, 'C', 5, HALF)
-    song.addNoteToTrack(0, 'E', 4, HALF)
-    song.addNoteToTrack(0, 'C', 4, HALF)
-    song.addNoteToTrack(0, 'C', 4, HALF)
-    # song.addNoteToTrack(1, 'A', 4, QUARTER)
-    # song.addNoteToTrack(1, 'C', 5, HALF)
-    # song.addNoteToTrack(1, 'E', 4, HALF)
-    # song.addNoteToTrack(1, 'C', 4, HALF)
-    # song.addRestToTrack(1, QUARTER)
-    # song.addRestToTrack(1, QUARTER)
-    # song.addRestToTrack(1, QUARTER)
-    # song.addNoteToTrack(1, 'C', 4, HALF)
-
-
-    song.markSongEnd()
-    print(song.pattern)
-    midi.write_midifile("example.mid", song.pattern)
-
 ################################################################################
 # Exception definitions
 ################################################################################

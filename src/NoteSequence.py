@@ -68,7 +68,6 @@ class NoteSequence:
 
             # Check if its time to insert a passage
             if (len(self.passages) is not 0 and len(seq) % PASSAGE_RATIO is 0 and self.checkDurationHistory()):
-                print("Entered")
                 self.addPassageToTrack(seq)
 
             # Check if it's time to insert a motif
@@ -233,7 +232,6 @@ class NoteSequence:
             seq.append(newNote)        #self??
             self.durationHistory.append(newNoteDuration)
             self.noteHistory.append(newNote)
-        print('Added passage')
 
     # Returns a random passage from the list of passages
     def findPassage(self):
@@ -249,13 +247,5 @@ class NoteSequence:
             newPassage.append(self.noteHistory[backCounter])
             if measureCount % PASSAGE_LENGTH is 0:
                 self.passages.append(newPassage)
+                return
             backCounter -= 1
-        print("None")
-        return None #Empty list?
-
-
-
-if __name__ == '__main__':
-    # TESTING
-    seq = NoteSequence('A Major', SOPRANO, 100)
-    seq.writeSequenceToTrack()

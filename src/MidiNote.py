@@ -60,21 +60,6 @@ def parseDuration(duration):
     endTick = case.get(duration)
     return (startTick, endTick)
 
-if __name__ == '__main__':
-    pattern = midi.Pattern(resolution=16)
-    track = midi.Track()
-    pattern.append(track)
-
-    note = newNote('C_5', 16, 20)
-    track.append(note[0])   # midi.on event
-    track.append(note[1])   # midi.off event
-
-    eot = midi.EndOfTrackEvent(tick=1)
-    track.append(eot)
-    print(pattern)
-    midi.write_midifile("example.mid", pattern)
-
-
 ################################################################################
 # Exception definitions
 ################################################################################
