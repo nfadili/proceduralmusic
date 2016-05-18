@@ -192,7 +192,6 @@ class NoteSequence:
         return Motifs(case.get(voice)).fixedMotifs
 
     def getMotif(self, seq):
-        print('MOTIF')
         motif = self.motifs[random.randint(0, len(self.motifs)-1)]
         for note in motif:
             noteInKey = self.key[note[0]]
@@ -228,11 +227,20 @@ class NoteSequence:
             return True
 
     def checkPassageDuration(self, passage):
-        counter = 0
-        for note in passage:
-            if note.duration is SIXTEENTH:
-                counter += 1
-        return counter % 2 == 0
+        if len(passage) is 0: return False
+        i = 0
+        count = 0
+        while i < len(passage):
+            while passage[i].duration is SIXTEENTH:
+                count += 1
+                i += 1
+                if i is len(passage): break
+            if count % 2 is not 0: return False
+            count = 0
+            i += 1
+        return True
+
+
 
     # Adds a previously generated passage in the sequences current octave to the master sequence
     def addPassageToTrack(self, seq):
@@ -260,9 +268,11 @@ class NoteSequence:
             measureCount += 1.0 / self.noteHistory[backCounter].duration  #whole = (1/1), half = (1/2), quarter = (1/4)
             noteCount += 1
             newPassage.append(self.noteHistory[backCounter])
-            print(measureCount)
             if measureCount.is_integer():
-                if int(measureCount) % 4 is 0 and noteCount > 3 and self.checkPassageDuration(newPassage):
+                if int(measureCount) % PASSAGE_LENGTH is 0 and noteCount > 3 and self.checkPassageDuration(newPassage):
                     self.passages.append(newPassage)
                     return
             backCounter -= 1
+
+    def passageFitness(self, passage):
+        pass

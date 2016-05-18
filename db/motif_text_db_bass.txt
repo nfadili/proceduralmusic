@@ -6,9 +6,6 @@
 0Q, 0Q, 3Q, 3Q, 5Q, 5Q, 4Q, 6Q
 0H, 0H, 5H, 5H, 3H, 3H, 4H, 4H
 0Q, 0Q, 5Q, 5Q, 3Q, 3Q, 4Q, 4Q
-0E, 0E, 0E, 0E, 0E, 0E, 0E, 0E
 0Q, 0Q, 0Q, 0Q
 4Q, 4Q, 4Q, 4Q
-4E, 4E, 4E, 4E, 4E, 4E, 4E, 4E
 3Q, 3Q, 3Q, 3Q
-3E, 3E, 3E, 3E, 3E, 3E, 3E, 3E
