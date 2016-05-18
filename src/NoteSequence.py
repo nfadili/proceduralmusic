@@ -67,8 +67,12 @@ class NoteSequence:
             self.determineToSavePassage()
 
             # Check if its time to insert a passage
-            if (len(self.passages) is not 0 and len(seq) % PASSAGE_RATIO is 0 and self.checkDurationHistory()):
-                self.addPassageToTrack(seq)
+            if (
+                len(self.passages) is not 0 and len(seq) % PASSAGE_RATIO is 0 and \
+                self.checkDurationHistory()
+                ):
+                    self.addPassageToTrack(seq)
+                    print('')
 
             # Check if it's time to insert a motif
             if self.determineToAddMotif(len(seq)):
@@ -188,6 +192,7 @@ class NoteSequence:
         return Motifs(case.get(voice)).fixedMotifs
 
     def getMotif(self, seq):
+        print('MOTIF')
         motif = self.motifs[random.randint(0, len(self.motifs)-1)]
         for note in motif:
             noteInKey = self.key[note[0]]
@@ -201,13 +206,13 @@ class NoteSequence:
     # the more often a motif is inserted.
     def determineToAddMotif(self, count):
         if self.voice is SOPRANO:
-            return (count % 10 == 0 and self.checkDurationHistory())
+            return (count % random.randint(2, 24) == 0 and self.checkDurationHistory())
         if self.voice is TENOR:
-            return (count % 8 == 0 and self.checkDurationHistory())
+            return (count % random.randint(2, 16) == 0 and self.checkDurationHistory())
         if self.voice is ALTO:
-            return (count % 6 == 0 and self.checkDurationHistory())
+            return (count % random.randint(2, 16) == 0 and self.checkDurationHistory())
         if self.voice is BASS:
-            return (count % 4 == 0 and self.checkDurationHistory())
+            return (count % random.randint(2, 24) == 0 and self.checkDurationHistory())
 
     def checkDurationHistory(self):
         firstNote = self.durationHistory[-1]
@@ -222,6 +227,13 @@ class NoteSequence:
         else:
             return True
 
+    def checkPassageDuration(self, passage):
+        counter = 0
+        for note in passage:
+            if note.duration is SIXTEENTH:
+                counter += 1
+        return counter % 2 == 0
+
     # Adds a previously generated passage in the sequences current octave to the master sequence
     def addPassageToTrack(self, seq):
         passage = self.findPassage()
@@ -229,9 +241,10 @@ class NoteSequence:
             newNoteVal = note.noteValue
             newNoteDuration = note.duration
             newNote = Note(newNoteVal, self.currentOctave, newNoteDuration)
-            seq.append(newNote)        #self??
+            seq.append(newNote)
             self.durationHistory.append(newNoteDuration)
             self.noteHistory.append(newNote)
+            print(str(newNote))
 
     # Returns a random passage from the list of passages
     def findPassage(self):
@@ -240,12 +253,16 @@ class NoteSequence:
     # Determines if a passage of length PASSAGE_LENGTH exists in the sequence so far
     def determineToSavePassage(self):
         measureCount = 0
+        noteCount = 0
         backCounter = -1
         newPassage = []
         for i in range(len(self.noteHistory)):
-            measureCount += 1 / self.noteHistory[backCounter].duration  #whole = (1/1), half = (1/2), quarter = (1/4)
+            measureCount += 1.0 / self.noteHistory[backCounter].duration  #whole = (1/1), half = (1/2), quarter = (1/4)
+            noteCount += 1
             newPassage.append(self.noteHistory[backCounter])
-            if measureCount % PASSAGE_LENGTH is 0:
-                self.passages.append(newPassage)
-                return
+            print(measureCount)
+            if measureCount.is_integer():
+                if int(measureCount) % 4 is 0 and noteCount > 3 and self.checkPassageDuration(newPassage):
+                    self.passages.append(newPassage)
+                    return
             backCounter -= 1
