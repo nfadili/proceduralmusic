@@ -12,5 +12,5 @@ Available keys:
     'Minor'
     'Harmonic Minor'
     'Neopolitan Major'
-    'Falmenco'
+    'Flamenco'
     'Gypsy'
