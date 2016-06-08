@@ -3,7 +3,8 @@ Procedural music generation project using:
     vishnubob's python-midi library
 
 To Run:
-    This program depends on this library -> https://github.com/nfadili/python-midi. Downlaod and run it first.
+    This program depends on this library -> https://github.com/nfadili/python-midi. 
+    Downlaod and run it first.
     Once installed, clone this repo and from the project's root directory run -> src/main.py.
     
 Available keys:
